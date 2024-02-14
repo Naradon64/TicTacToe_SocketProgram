@@ -31,10 +31,15 @@ class TicTacToe:
             
             self.clientInputTurn()
             winner, loser = self.check_win()
-            if winner != None:
+            if winner == "DRAW":
+                self.sendMessageToClient("It's a draw!", STATUS_FINISH, self.firstClient)
+                self.sendMessageToClient("It's a draw!", STATUS_FINISH, self.secondClient)
+                break
+            elif winner is not None:
                 self.sendMessageToClient("Congratulations! You win!", STATUS_FINISH, winner)
                 self.sendMessageToClient("Sorry, you lose. Better luck next time.", STATUS_FINISH, loser)
                 break
+
             
 
     def clientInputTurn(self):
@@ -127,7 +132,12 @@ class TicTacToe:
                 all(self.table[i][2 - i] == self.secondClientSymbol for i in range(3)):
             return self.secondClient, self.firstClient  # Second client wins, first client loses
 
+        # Check for draw
+        if all(cell != '_' for row in self.table for cell in row):
+            return "DRAW", None  # Return draw if all cells are occupied and no winner
+        
         return None, None  # No winner yet
+
 
 
 
